@@ -1,10 +1,11 @@
-import './styles.css';
-// import { createStore } from './createStore';
+import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
-import { applyMiddleware, createStore } from 'redux';
+import { composeWithDevTools } from '@redux-devtools/extension';
 import { rootReducer } from './redux/rootReducer';
-import { asyncIncrement, decrement, increment } from './redux/actions';
+import { asyncIncrement, changeTheme, decrement, increment } from './redux/actions';
+import './styles.css';
+// import { createStore } from './createStore';
 
 const counter = document.getElementById('counter');
 const addBtn = document.getElementById('add');
@@ -28,10 +29,20 @@ const themeBtn = document.getElementById('theme');
 // Создаем свою функцию которая есть в Redux
 // получаем объект store который взаимодействует с данными 
 // Для работы createStore нужен 1 параметр rootReducer
+// const store = createStore(
+//     rootReducer,
+//     compose(
+//         applyMiddleware(thunk, logger),
+//         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+//     ) 
+// );
+
+// С помощью установленного пакета composeWithDevTools
 const store = createStore(
-    rootReducer, 
-    0, 
-    applyMiddleware(thunk, logger)
+    rootReducer,
+    composeWithDevTools (
+        applyMiddleware(thunk, logger),
+    ) 
 );
 
 addBtn.addEventListener('click', () => {
@@ -48,14 +59,22 @@ asyncBtn.addEventListener('click', () => {
     }, 2000)
 });
 
+themeBtn.addEventListener('click', () => {
+    const newTheme = document.body.classList.contains('light') 
+    ? 'dark'
+    : 'light'
+    store.dispatch(changeTheme(newTheme));
+});
+
 store.subscribe(() => {
     const state = store.getState();
 
-    counter.textContent = state;
+    counter.textContent = state.counter;
+    document.body.className = state.theme.value;
+
+    [addBtn, subBtn, themeBtn, asyncBtn].forEach(btn => { 
+        btn.disabled = state.theme.disabled
+    });
 });
 
 store.dispatch({type: 'INIT_APPLICATION'});
-
-themeBtn.addEventListener('click', () => {
-    // document.body.classList.toggle('dark');
-});

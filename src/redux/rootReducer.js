@@ -1,8 +1,10 @@
-import { DECREMENT, INCREMENT } from "./types";
+import { combineReducers } from "redux";
+import { CHANGE_THEME, DECREMENT, DISABLE_BUTTONS, ENABLE_BUTTONS, INCREMENT } from "./types";
 
-// rootReducer должен вернуть новый объект
+// rootReducer должен вернуть новый объект state
 // асинхронных событий быть не должно 
-export function rootReducer(state, action) {
+// Reducer меняет состояние 
+function counterReducer(state = 0, action) {
     if(action.type === INCREMENT) {
         return state + 1;
     } else if (action.type === DECREMENT) {
@@ -10,3 +12,25 @@ export function rootReducer(state, action) {
     } 
     return state;
 }
+
+const initialThemeState = {
+    value: 'light',
+    disabled: false
+}
+
+function themeReducer(state = initialThemeState, action) {
+    switch (action.type) {
+        case CHANGE_THEME:
+            return {...state, value: action.payload}
+        case ENABLE_BUTTONS:
+            return {...state, disabled: false}
+        case DISABLE_BUTTONS:
+            return {...state, disabled: true}
+        default: return state
+    }
+}
+
+export const rootReducer = combineReducers({
+    counter: counterReducer,
+    theme: themeReducer
+});

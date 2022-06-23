@@ -1,6 +1,7 @@
 # Redux Полный Курс #
-Запуск npm start
-Установка пакетов npm i
-Установка redux npm i redux 
-Установка redux-thunk npm i redux-thunk
-Установка redux-logger npm i redux-logger
+Запуск npm start<br>
+Установка пакетов: npm i<br>
+Установка: npm i redux<br> 
+Установка: npm i redux-thunk<br>
+Установка: npm i redux-logger<br>
+Установка: npm install --save @redux-devtools/extension
